@@ -1,3 +1,4 @@
+%define keepstatic 1
 Name:           libass
 Version:        0.17.1
 Release:        1%{?dist}
@@ -27,12 +28,21 @@ Requires:       pkgconfig
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
+%package        devel-static
+Summary:        Development files for %{name}
+
+%description    devel-static
+The %{name}-devel package contains libraries and header files for
+developing applications that use %{name}.
+
+
 %prep
 %autosetup -n %{name}-%{version}/upstream -p1
 
 %build
+export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 ./autogen.sh
-%configure --disable-static
+%configure --enable-static
 %make_build
 
 %install
@@ -52,3 +62,5 @@ find %{buildroot} -name '*.la' -delete
 %{_includedir}/ass
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
+%files devel-static
+%{_libdir}/libass.*a
